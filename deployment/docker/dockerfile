@@ -1,0 +1,10 @@
+FROM alpine:3.8
+
+WORKDIR /home/
+COPY anmotor.bin ./
+RUN chmod +x anmotor.bin
+
+COPY configs ./configs
+
+EXPOSE 8080
+CMD ["./anmotor.bin"]
