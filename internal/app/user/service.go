@@ -2,11 +2,12 @@ package user
 
 import (
 	"context"
-	"fmt"
 
+	"github.com/anmotor/internal/app/status"
 	"github.com/anmotor/internal/app/types"
 	db "github.com/anmotor/internal/pkg/database"
 
+	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -29,15 +30,16 @@ func NewService(repo repoProvider) *Service {
 func (s *Service) AuthenUser(ctx context.Context, username, password string) (*types.User, error) {
 	user, err := s.Repo.FindUser(ctx, username)
 	if err != nil && !db.IsErrNotFound(err) {
-		return nil, fmt.Errorf("internal server error, %v", err)
+		logrus.Errorf("failed to check existing user by username, err: %v", err)
+		return nil, status.Gen().Internal
 	}
-
 	if db.IsErrNotFound(err) {
-		return nil, fmt.Errorf("user not found, %v", err)
+		logrus.Debugf("user not found, username: %s", username)
+		return nil, status.User().UserNotFound
 	}
-
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
-		return nil, fmt.Errorf("internal error")
+		logrus.Error("invalid password")
+		return nil, status.Auth().InvalidUserPassword
 	}
 	return user.Strip(), nil
 }

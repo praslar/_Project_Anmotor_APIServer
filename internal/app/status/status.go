@@ -26,9 +26,19 @@ type (
 		BikeDuplicate Status `yaml:"duplicated_bike"`
 	}
 
+	UserStatus struct {
+		UserNotFound Status `yaml:"not_found_user"`
+	}
+
+	AuthStatus struct {
+		InvalidUserPassword Status `yaml:"invalid_user_password"`
+	}
+
 	statuses struct {
 		Gen  GenStatus
 		Bike BikeStatus
+		User UserStatus
+		Auth AuthStatus
 	}
 )
 
@@ -73,6 +83,14 @@ func Bike() BikeStatus {
 	return load().Bike
 }
 
+func User() UserStatus {
+	return load().User
+}
+
 func Success() Status {
 	return Gen().Success
+}
+
+func Auth() AuthStatus {
+	return load().Auth
 }
