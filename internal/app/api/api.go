@@ -16,7 +16,11 @@ const (
 )
 
 func NewRouter() (http.Handler, error) {
-	//=================Policy-Role Base=========
+	bikeSrv, err := newBikeService()
+	if err != nil {
+		return nil, err
+	}
+	bikeHandler := newBikeHandler(bikeSrv)
 
 	indexHandler := NewIndexHandler()
 
@@ -27,6 +31,8 @@ func NewRouter() (http.Handler, error) {
 			Handler: indexHandler.ServeHTTP,
 		},
 	}
+
+	routes = append(routes, bikeHandler.Routes()...)
 
 	conf := router.LoadConfigFromEnv()
 	conf.Routes = routes
