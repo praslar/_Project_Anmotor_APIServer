@@ -11,9 +11,7 @@ import (
 type (
 	Claims struct {
 		jwt.StandardClaims
-		FirstName string
-		LastName  string
-		UserID    string
+		UserName string
 	}
 
 	Config struct {
