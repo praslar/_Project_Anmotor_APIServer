@@ -1,0 +1,72 @@
+version: '3'
+
+services:
+  mongodb:
+    image: mongo:latest
+    hostname: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - /opt/data/mongo_home:/data/db
+    restart: always
+
+  elasticsearch:
+    image: elasticsearch:7.6.0
+    ports:
+      - 9200:9200
+      - 9300:9300
+    environment:
+      - discovery.type=single-node
+    restart: always
+
+  kibana:
+    image: kibana:7.6.0
+    ports:
+      - 5601:5601
+    environment:
+      - discovery.type=single-node  
+    restart: always
+
+  backend:
+    image: realize:2.0.2
+    hostname: backend
+    ports:
+      - "8080:8080"
+      - "8082:8082" 
+      - "443:443"
+    environment:
+      - GO111MODULE=on
+
+      - HTTP_READ_TIMEOUT=${HTTP_READ_TIMEOUT}
+      - HTTP_WRITE_TIMEOUT=${HTTP_WRITE_TIMEOUT}
+      - HTTP_READ_HEADER_TIMEOUT=${HTTP_READ_HEADER_TIMEOUT}
+      - HTTP_SHUTDOWN_TIMEOUT=${HTTP_SHUTDOWN_TIMEOUT}
+      - PORT=${PORT}
+      - HTTP_HOST=${HTTP_HOST}
+      - HTTP_ALLOWED_ORIGINS=${HTTP_ALLOWED_ORIGINS}
+      - HTTP_PORT=${HTTP_PORT}
+
+      # DB
+      - MONGODB_ADDRS=${MONGODB_ADDRS}
+      - MONGODB_DATABASE=${MONGODB_DATABASE}
+      - MONGODB_TIMEOUT=${MONGODB_TIMEOUT}
+
+
+    volumes:
+    #   - ../../.realize.yaml:/go/src/github.com/gotasma/.realize.yaml
+    #   - ../../main.go:/go/src/github.com/gotasma/main.go
+    #   - ../../go.mod:/go/src/github.com/gotasma/go.mod
+    #   - ../../go.sum:/go/src/github.com/gotasma/go.sum
+    #   - ../../internal:/go/src/github.com/gotasma/internal/
+    #   - ../../configs:/go/src/github.com/gotasma/configs/
+       - ../scripts:/go/scripts
+
+    entrypoint: [
+      "sh",
+      "-c",
+      "/scripts/wait-for.sh elasticsearch:9200 -q --timeout=40 -- realize start" ]
+    
+    depends_on:
+      - mongodb
+      - elasticsearch
+    restart: always

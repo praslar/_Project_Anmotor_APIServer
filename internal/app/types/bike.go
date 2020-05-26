@@ -23,9 +23,9 @@ type (
 	}
 
 	CreateBike struct {
-		Number string `json:"number,omitempty" bson:"number"`
-		Name   string `json:"name,omitempty" bson:"name"`
-		Color  string `json:"color,omitempty" bson:"color"`
-		Cost   int    `json:"rental,omitempty" bson:"rental"`
+		Number string `json:"number,omitempty"  validate:"required"`
+		Name   string `json:"name,omitempty"  validate:"required"`
+		Color  string `json:"color,omitempty" validate:"required"`
+		Cost   int    `json:"rental,omitempty"  validate:"required"`
 	}
 )
