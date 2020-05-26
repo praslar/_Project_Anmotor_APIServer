@@ -3,6 +3,7 @@ package api
 import (
 	"net/http"
 
+	"github.com/anmotor/internal/app/auth"
 	"github.com/anmotor/internal/pkg/http/middleware"
 	"github.com/anmotor/internal/pkg/http/router"
 )
@@ -22,7 +23,16 @@ func NewRouter() (http.Handler, error) {
 	}
 	bikeHandler := newBikeHandler(bikeSrv)
 
+	userSrv, err := newUserService()
+	if err != nil {
+		return nil, err
+	}
+
+	//===========================================================
 	indexHandler := NewIndexHandler()
+	jwtSignVerifier := newJWTSignVerifier()
+	userInfoMiddleware := auth.UserInfoMiddleware(jwtSignVerifier)
+	authHandler := newAuthHandler(jwtSignVerifier, userSrv)
 
 	routes := []router.Route{
 		{
@@ -33,9 +43,14 @@ func NewRouter() (http.Handler, error) {
 	}
 
 	routes = append(routes, bikeHandler.Routes()...)
+	routes = append(routes, authHandler.Routes()...)
 
 	conf := router.LoadConfigFromEnv()
 	conf.Routes = routes
+
+	conf.Middlewares = []router.Middleware{
+		userInfoMiddleware,
+	}
 
 	r, err := router.New(conf)
 
