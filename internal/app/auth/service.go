@@ -2,10 +2,11 @@ package auth
 
 import (
 	"context"
-	"errors"
 
+	"github.com/anmotor/internal/app/status"
 	"github.com/anmotor/internal/app/types"
 	"github.com/anmotor/internal/pkg/jwt"
+
 	"github.com/sirupsen/logrus"
 )
 
@@ -31,7 +32,7 @@ func (s *Service) Auth(ctx context.Context, username, password string) (string, 
 	user, err := s.authentication.AuthenUser(ctx, username, password)
 	if err != nil {
 		logrus.WithContext(ctx).Errorf("fail to login with %s, err: %#v", username, err)
-		return "", nil, errors.New("unauthorized")
+		return "", nil, status.Gen().BadRequest
 	}
 	token, err := s.jwtSigner.Sign(userToClaims(user, jwt.DefaultLifeTime))
 	if err != nil {
