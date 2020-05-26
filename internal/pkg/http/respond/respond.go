@@ -10,7 +10,6 @@ type (
 		Error() string
 		Code() uint32
 		Message() string
-
 		Status() int
 	}
 )
