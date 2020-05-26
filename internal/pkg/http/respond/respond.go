@@ -14,6 +14,7 @@ type (
 	}
 )
 
+// JSON write status and JSON data to http response writer
 func JSON(w http.ResponseWriter, status int, data interface{}) {
 	b, err := json.Marshal(data)
 	if err != nil {
@@ -25,6 +26,7 @@ func JSON(w http.ResponseWriter, status int, data interface{}) {
 	w.Write(b)
 }
 
+// Error write error, status to http response writer with JSON format: {"code": status, "message": error}
 func Error(w http.ResponseWriter, err error, status int) {
 	if appError, ok := err.(appError); ok {
 		JSON(w, appError.Status(), appError)

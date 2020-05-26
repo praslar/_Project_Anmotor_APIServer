@@ -1,0 +1,36 @@
+gen:
+  success:
+    code: 1000
+    status: 200
+    message: "Success"
+  not_found:
+    code: 1010
+    status: 404
+    message: "Not found"
+  timeout:
+    code: 1020
+    status: 500
+    message: "Timeout"
+  bad_request:
+    code: 1030
+    status: 400
+    message: "Invalid input"
+  internal:
+    code: 1040
+    status: 500
+    message: "Internal server error"
+auth:
+  invalid_user_password:
+    code: 1100
+    status: 401
+    message: "Invalid email or passwrd"
+bike:
+  duplicated_bike:
+    code: 1200
+    status: 400
+    message: "Duplicated bike"
+  not_found_bike:
+    code: 1210
+    status: 400
+    message: "Bike not found"
+ 
