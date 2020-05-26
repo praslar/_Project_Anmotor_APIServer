@@ -3,6 +3,9 @@ BUILD_VERSION=$(shell cat VERSION)
 DOCKER_IMAGE=$(PROJECT_NAME):$(BUILD_VERSION)
 GO_BUILD_ENV=CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GO111MODULE=on
 
+REALIZE_VERSION=2.0.2
+REALIZE_IMAGE=realize:$(REALIZE_VERSION)
+
 
 .SILENT:
 
@@ -44,3 +47,10 @@ docker_postbuild:
 	rm -rf configs 2> /dev/null;
 
 docker: docker_prebuild docker_build docker_postbuild
+
+realize:
+	cd deployment/dev; \
+	docker build -t $(REALIZE_IMAGE) .;
+
+compose_dev: realize
+	cd deployment/dev && REALIZE_VERSION=$(REALIZE_VERSION) docker-compose up

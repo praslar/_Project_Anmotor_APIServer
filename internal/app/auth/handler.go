@@ -28,15 +28,17 @@ func NewHandler(srv service) *Handler {
 
 func (h *Handler) Auth(w http.ResponseWriter, r *http.Request) {
 	req := struct {
-		Username string
-		Password string
+		Username string `json:"username"`
+		Password string `json:"password"`
 	}{}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		respond.Error(w, err, http.StatusInternalServerError)
 		return
 	}
 	defer r.Body.Close()
+
 	token, user, err := h.srv.Auth(r.Context(), req.Username, req.Password)
+
 	if err != nil {
 		logrus.Errorf("unauthorized, err: %v", http.StatusUnauthorized)
 		respond.Error(w, err, http.StatusUnauthorized)

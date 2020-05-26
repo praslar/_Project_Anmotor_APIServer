@@ -6,6 +6,11 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+func init() {
+	logrus.SetFormatter(&logrus.TextFormatter{
+		ForceColors: true,
+	})
+}
 func main() {
 	router, err := api.NewRouter()
 	if err != nil {

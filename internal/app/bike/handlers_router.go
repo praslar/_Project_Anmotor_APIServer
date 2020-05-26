@@ -15,5 +15,29 @@ func (h *Handler) Routes() []router.Route {
 			Handler:     h.Create,
 			Middlewares: []router.Middleware{auth.RequireAuthMiddleware},
 		},
+		{
+			Path:        "/api/v1/bike",
+			Method:      http.MethodGet,
+			Handler:     h.FindAll,
+			Middlewares: []router.Middleware{auth.RequireAuthMiddleware},
+		},
+		{
+			Path:        "/api/v1/bike/{bike_id:[a-z0-9-\\-]+}",
+			Method:      http.MethodGet,
+			Handler:     h.FindByID,
+			Middlewares: []router.Middleware{auth.RequireAuthMiddleware},
+		},
+		{
+			Path:        "/api/v1/bike/{bike_id:[a-z0-9-\\-]+}",
+			Method:      http.MethodPatch,
+			Handler:     h.Update,
+			Middlewares: []router.Middleware{auth.RequireAuthMiddleware},
+		},
+		{
+			Path:        "/api/v1/bike/{bike_id:[a-z0-9-\\-]+}",
+			Method:      http.MethodDelete,
+			Handler:     h.Delete,
+			Middlewares: []router.Middleware{auth.RequireAuthMiddleware},
+		},
 	}
 }

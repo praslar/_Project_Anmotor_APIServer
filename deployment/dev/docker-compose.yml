@@ -10,23 +10,6 @@ services:
       - /opt/data/mongo_home:/data/db
     restart: always
 
-  elasticsearch:
-    image: elasticsearch:7.6.0
-    ports:
-      - 9200:9200
-      - 9300:9300
-    environment:
-      - discovery.type=single-node
-    restart: always
-
-  kibana:
-    image: kibana:7.6.0
-    ports:
-      - 5601:5601
-    environment:
-      - discovery.type=single-node  
-    restart: always
-
   backend:
     image: realize:2.0.2
     hostname: backend
@@ -53,20 +36,19 @@ services:
 
 
     volumes:
-    #   - ../../.realize.yaml:/go/src/github.com/gotasma/.realize.yaml
-    #   - ../../main.go:/go/src/github.com/gotasma/main.go
-    #   - ../../go.mod:/go/src/github.com/gotasma/go.mod
-    #   - ../../go.sum:/go/src/github.com/gotasma/go.sum
-    #   - ../../internal:/go/src/github.com/gotasma/internal/
-    #   - ../../configs:/go/src/github.com/gotasma/configs/
-       - ../scripts:/go/scripts
+      - ../../.realize.yaml:/go/src/github.com/anomotor/.realize.yaml
+      - ../../main.go:/go/src/github.com/anomotor/main.go
+      - ../../go.mod:/go/src/github.com/anomotor/go.mod
+      - ../../go.sum:/go/src/github.com/anomotor/go.sum
+      - ../../internal:/go/src/github.com/anomotor/internal/
+      - ../../configs:/go/src/github.com/anomotor/configs/
+    working_dir: /go/src/github.com/anomotor
 
     entrypoint: [
       "sh",
       "-c",
-      "/scripts/wait-for.sh elasticsearch:9200 -q --timeout=40 -- realize start" ]
+      "realize start"]
     
     depends_on:
       - mongodb
-      - elasticsearch
     restart: always

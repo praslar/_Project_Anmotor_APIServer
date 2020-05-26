@@ -9,6 +9,19 @@ import (
 )
 
 type (
+	Verifier interface {
+		Verify(tokenString string) (*Claims, error)
+	}
+
+	Signer interface {
+		Sign(claims Claims) (string, error)
+	}
+
+	SignVerifier interface {
+		Signer
+		Verifier
+	}
+
 	Claims struct {
 		jwt.StandardClaims
 		UserName string
@@ -24,19 +37,6 @@ type (
 	}
 
 	StandardClaims = jwt.StandardClaims
-
-	Signer interface {
-		Sign(claims Claims) (string, error)
-	}
-
-	Verifier interface {
-		Verify(tokenString string) (*Claims, error)
-	}
-
-	SignVerifier interface {
-		Signer
-		Verifier
-	}
 )
 
 const (
@@ -54,13 +54,16 @@ var (
 func New(conf Config) *Generator {
 	return &Generator{
 		Config:        conf,
-		SigningMethod: jwt.SigningMethodES256,
+		SigningMethod: jwt.SigningMethodHS256,
 	}
 }
 
 func (g *Generator) Sign(claims Claims) (string, error) {
+
 	token := jwt.NewWithClaims(g.SigningMethod, claims)
+
 	str, err := token.SignedString([]byte(g.Config.JWTSecret))
+
 	return str, err
 }
 

@@ -34,10 +34,13 @@ func (s *Service) Auth(ctx context.Context, username, password string) (string, 
 		logrus.WithContext(ctx).Errorf("fail to login with %s, err: %#v", username, err)
 		return "", nil, status.Gen().BadRequest
 	}
+
 	token, err := s.jwtSigner.Sign(userToClaims(user, jwt.DefaultLifeTime))
+
 	if err != nil {
 		logrus.WithContext(ctx).Errorf("fail to gerenate JWT token, err: %#v", err)
 		return "", nil, err
 	}
+
 	return token, user, nil
 }
