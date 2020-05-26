@@ -9,9 +9,9 @@ import (
 func (h *Handler) Routes() []router.Route {
 	return []router.Route{
 		{
-			Path:   "/authentication",
-			Method: http.MethodPost,
-			// Handler: ,
+			Path:    "/authentication",
+			Method:  http.MethodPost,
+			Handler: h.Auth,
 		},
 	}
 }
