@@ -54,7 +54,7 @@ var (
 func New(conf Config) *Generator {
 	return &Generator{
 		Config:        conf,
-		SigningMethod: jwt.SigningMethodES256,
+		SigningMethod: jwt.SigningMethodHS256,
 	}
 }
 
